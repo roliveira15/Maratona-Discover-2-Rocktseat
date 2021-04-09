@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="/styles/partials/modal.css" />
     <link rel="stylesheet" href="/styles/partials/animations.css" />
     <link rel="stylesheet" href="/styles/pages/index.css" />
-
+    <link rel="stylesheet" href="/styles/partials/footer.css" />
+    
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
@@ -35,9 +36,9 @@
             Você tem 2 horas livres no seu dia
           </span>
           <a href="/profile" id="avatar-profile">
-            <p>Jakeliny <span>Ver perfil</span></p>
+            <p> <%= profile.name  %>  <span>Ver perfil</span></p>
             <img
-              src="https://avatars.githubusercontent.com/u/17316392?s=460&u=6912a91a70bc89745a2079fdcdad3bc3ce370f13&v=4"
+              src="<%= profile.avatar %>" alt="<%= profile.name %>"
             />
           </a>
         </section>
@@ -76,71 +77,58 @@
         <h1 class="sr-only">Trabalhos</h1>
 
         <div class="cards">
-          <div class="card progress" data-id="1">
-            <div class="id column">1</div>
-            <div class="name column">
-              Pizzaria Guloso
-            </div>
-            <div class="deadline column">
-              <span>Prazo</span>
-              <p>3 dias para a entrega</p>
-            </div>
-            <div class="amount column">
-              <span>Valor</span>
-              <p>R$ 4500,00</p>
-            </div>
-            <div class="status badge column">
-              Em andamento
-            </div>
-            <div class="actions column flex">
-              <p class="sr-only">Ações</p>
-              <a 
-                href="/job-edit" 
-                class="button white edit" 
-                title="Editar Job">
-                <img src="/images/edit-24.svg" alt="Editar Job" />
-              </a>
-              <button class="delete button white" title="Excluir Job">
-                <img src="/images/trash-24.svg" alt="Excluir Job" />
-              </button>
-            </div>
-          </div>
-          <!-- end card -->
+          <!-- remaining,
+          status,
+          budget: profile["value-hour"] * job["total-hours"] -->
+          <% jobs.forEach((job) => { %>
+          
+            <div class="card <%= job.status %> " data-id="<%= job.id %>">
+              <div class="id column"><%= job.id %></div>
+              <div class="name column">
+                <%= job.name %> 
+              </div>
+              <div class="deadline column">
+                <span>Prazo</span>
+                <p>
+                  <% if (job.status === 'progress') { %>
+                      <%= job.remaining %> dias para a entrega
+                  
+                  <% } else { %>
+                      Prazo encerrado
+                  <% } %> 
 
-          <div class="card done" data-id="2">
-            <div class="id column">2</div>
-            <div class="name column">
-              OneTwo Project
+                  
+                
+                </p>
+              </div>
+              <div class="amount column">
+                <span>Valor</span>
+                <p>R$ <%= job.budget.toFixed(2).replace('.',',') %></p> </p>
+              </div>
+              <div class="status badge column">
+                <%= job.status === 'done' ? 'Encerrado' : 'Em andamento' %>
+              </div>
+              <div class="actions column flex">
+                <p class="sr-only">Ações</p>
+                <a 
+                  href="/job/<%= job.id %>"
+                  class="button white edit" 
+                  title="Editar Job">
+                  <img src="/images/edit-24.svg" alt="Editar Job" />
+                </a>
+                <button class="delete button white" title="Excluir Job">
+                  <img src="/images/trash-24.svg" alt="Excluir Job" />
+                </button>
+              </div>
             </div>
-            <div class="deadline column">
-              <span>Prazo</span>
-              <p>3 dias para a entrega</p>
-            </div>
-            <div class="amount column">
-              <span>Valor</span>
-              <p>R$ 4500,00</p>
-            </div>
-            <div class="status badge column">
-              Encerrado
-            </div>
-            <div class="actions column flex">
-              <p class="sr-only">Ações</p>
-              <a 
-                href="/job-edit" 
-                class="button white edit" 
-                title="Editar Job">
-                <img src="/images/edit-24.svg" alt="Editar Job" />
-              </a>
-              <button class="delete button white" title="Excluir Job">
-                <img src="/images/trash-24.svg" alt="Excluir Job" />
-              </button>
-            </div>
-          </div>
+
+          <% }); %> 
+
+          <!-- end card -->
         </div>
         <!-- end cards -->
       </main>
     </div>
-    <!-- end container -->
 
     <div class="modal-wrapper">
       <div class="modal">
@@ -148,7 +136,7 @@
         <h3>Excluir Job</h3>
         <p>Quer mesmo excluir esse job? <br/>
         Ele será apagado para sempre.  
-        <p>
+        </p>
         <footer>
           <a 
             class="button gray" 
@@ -161,9 +149,14 @@
       </div>
       <form 
         method="post" 
-        action="/job/delete" 
+        action="/job/delete/"  
         id="delete-job"></form>
     </div>
+    
+    
     <!-- end modal-wrapper -->
   </body>
+
+  <%- include('parts/footer') %> 
+
 </html>
